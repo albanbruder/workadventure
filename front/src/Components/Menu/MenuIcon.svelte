@@ -40,12 +40,13 @@
 </main>
 
 <style lang="scss">
+    @import "../../../style/breakpoints.scss";
     .menuIcon {
         display: flex;
         flex-direction: column;
         align-items: center;
         margin-top: 20%;
-        z-index: 90;
+        z-index: 800;
         position: relative;
 
         img {
@@ -58,7 +59,7 @@
     .menuIcon img:hover {
         transform: scale(1.2);
     }
-    @media only screen and (max-aspect-ratio: 0.7/1) {
+    @include media-breakpoint-up(sm) {
         .menuIcon {
             margin-top: 10%;
             img {
@@ -71,12 +72,13 @@
         .menuIcon img:hover {
             transform: scale(1.2);
         }
-        @media only screen and (max-width: 800px), only screen and (max-height: 800px) {
-            .menuIcon {
-                margin: 3px;
-                img {
-                    width: 50px;
-                }
+    }
+
+    @include media-breakpoint-up(md) {
+        .menuIcon {
+            margin: 3px;
+            img {
+                width: 50px;
             }
         }
     }

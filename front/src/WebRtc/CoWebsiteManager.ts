@@ -35,6 +35,14 @@ export type CoWebsite = {
     iframe: HTMLIFrameElement;
 };
 
+coWebsites.subscribe((value) => {
+    console.log(value);
+});
+
+highlightedEmbedScreen.subscribe((value) => {
+    console.log(value);
+});
+
 class CoWebsiteManager {
     private openedMain: iframeStates = iframeStates.closed;
 
@@ -367,17 +375,10 @@ class CoWebsiteManager {
 
         const bounding = coWebsiteSlot.getBoundingClientRect();
 
-        if (coWebsite.iframe.classList.contains("thumbnail")) {
-            coWebsite.iframe.style.width = (bounding.right - bounding.left) * 2 + "px";
-            coWebsite.iframe.style.height = (bounding.bottom - bounding.top) * 2 + "px";
-            coWebsite.iframe.style.top = bounding.top - Math.floor(bounding.height * 0.5) + "px";
-            coWebsite.iframe.style.left = bounding.left - Math.floor(bounding.width * 0.5) + "px";
-        } else {
-            coWebsite.iframe.style.top = bounding.top + "px";
-            coWebsite.iframe.style.left = bounding.left + "px";
-            coWebsite.iframe.style.width = bounding.right - bounding.left + "px";
-            coWebsite.iframe.style.height = bounding.bottom - bounding.top + "px";
-        }
+        coWebsite.iframe.style.top = bounding.top + "px";
+        coWebsite.iframe.style.left = bounding.left + "px";
+        coWebsite.iframe.style.width = bounding.right - bounding.left + "px";
+        coWebsite.iframe.style.height = bounding.bottom - bounding.top + "px";
 
         coWebsite.iframe.classList.remove("pixel");
     }
@@ -401,6 +402,13 @@ class CoWebsiteManager {
 
         if (highlightEmbed && highlightEmbed.type === "cowebsite") {
             iframes.push(highlightEmbed.embed);
+        } else {
+            get(coWebsites).forEach((coWebsite) => {
+                if (coWebsite.iframe.classList.contains("highlighted")) {
+                    coWebsite.iframe.classList.remove("highlighted");
+                    coWebsite.iframe.classList.add("pixel");
+                }
+            });
         }
 
         iframes.forEach((coWebsite: CoWebsite) => {
@@ -411,12 +419,31 @@ class CoWebsiteManager {
 
     private removeCoWebsiteFromStack(coWebsite: CoWebsite) {
         coWebsites.remove(coWebsite);
+        const highlighted = get(highlightedEmbedScreen);
+
+        if (highlighted && highlighted.type === "cowebsite" && highlighted.embed.iframe.id === coWebsite.iframe.id) {
+            highlightedEmbedScreen.removeHighlight();
+        }
 
         if (get(coWebsites).length < 1) {
             this.closeMain();
         }
 
         coWebsite.iframe.remove();
+    }
+
+    public goToMain(coWebsite: CoWebsite) {
+        const mainCoWebsite = this.getMainCoWebsite();
+        coWebsites.remove(coWebsite);
+        coWebsites.add(coWebsite, 0);
+
+        if (mainCoWebsite) {
+            highlightedEmbedScreen.toggleHighlight({
+                type: "cowebsite",
+                embed: mainCoWebsite,
+            });
+            this.resizeAllIframes();
+        }
     }
 
     public searchJitsi(): CoWebsite | undefined {

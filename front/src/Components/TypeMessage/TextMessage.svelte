@@ -20,7 +20,7 @@
 
 <svelte:window on:keydown={onKeyDown} />
 
-<div class="main-text-message nes-container is-rounded" transition:fly={{ x: -1000, duration: 500 }}>
+<div class="main-text-message nes-container is-rounded" transition:fly={{ y: -1000, duration: 500 }}>
     <div class="content-text-message">
         {@html converter.convert()}
     </div>
@@ -35,12 +35,17 @@
     div.main-text-message {
         display: flex;
         flex-direction: column;
+        position: absolute;
 
-        max-height: 25vh;
-        width: 80vw;
+        max-height: 25%;
+        width: 60%;
         margin-right: auto;
         margin-left: auto;
+        top: 6%;
+        left: 0;
+        right: 0;
         padding-bottom: 0;
+        z-index: 240;
 
         pointer-events: auto;
         background-color: #333333;

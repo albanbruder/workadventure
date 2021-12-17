@@ -4,6 +4,7 @@
     import CoWebsitesContainer from "../CoWebsitesContainer.svelte";
     import MediaBox from "../../Video/MediaBox.svelte";
     import { coWebsiteManager } from "../../../WebRtc/CoWebsiteManager";
+    import { afterUpdate } from "svelte";
 
     function closeCoWebsite() {
         if ($highlightedEmbedScreen?.type === "cowebsite") {
@@ -12,8 +13,23 @@
     }
 
     function minimiseCoWebsite() {
-        highlightedEmbedScreen.removeHighlight();
+        if ($highlightedEmbedScreen?.type === "cowebsite") {
+            highlightedEmbedScreen.removeHighlight();
+            coWebsiteManager.resizeAllIframes();
+        }
     }
+
+    function expandCoWebsite() {
+        if ($highlightedEmbedScreen?.type === "cowebsite") {
+            coWebsiteManager.goToMain($highlightedEmbedScreen.embed);
+        }
+    }
+
+    afterUpdate(() => {
+        if ($highlightedEmbedScreen) {
+            coWebsiteManager.resizeAllIframes();
+        }
+    });
 </script>
 
 <div id="embed-left-block">
@@ -21,7 +37,7 @@
         {#if $highlightedEmbedScreen}
             {#if $highlightedEmbedScreen.type === "streamable"}
                 {#key $highlightedEmbedScreen.embed.uniqueId}
-                    <MediaBox streamable={$highlightedEmbedScreen.embed} />
+                    <MediaBox isHightlighted={true} streamable={$highlightedEmbedScreen.embed} />
                 {/key}
             {:else if $highlightedEmbedScreen.type === "cowebsite"}
                 {#key $highlightedEmbedScreen.embed.iframe.id}
@@ -30,8 +46,10 @@
                         class="highlighted-cowebsite nes-container is-rounded"
                     >
                         <div class="actions">
-                            <button type="button" class="nes-btn is-primary expand" on:click={minimiseCoWebsite}
-                                >></button
+                            <button type="button" class="nes-btn is-primary expand" on:click={expandCoWebsite}>></button
+                            >
+                            <button type="button" class="nes-btn is-primary minimise" on:click={minimiseCoWebsite}
+                                >=</button
                             >
                             <button type="button" class="nes-btn is-error close" on:click={closeCoWebsite}
                                 >&times;</button
@@ -54,18 +72,25 @@
         flex-direction: column;
         flex: 0 0 75%;
         height: 100%;
-        //border: 1px purple solid;
         width: 75%;
     }
     #main-embed-screen {
-        //border: 1px red solid;
         height: 70%;
         margin-bottom: 5%;
-        //max-height: 85%;
 
         .highlighted-cowebsite {
             height: 100%;
             background-color: rgba(#000000, 0.6);
+
+            .actions {
+                z-index: 200;
+                position: relative;
+                display: flex;
+                flex-direction: row;
+                justify-content: end;
+                gap: 2%;
+                pointer-events: all;
+            }
         }
     }
 </style>

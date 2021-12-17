@@ -77,7 +77,7 @@
     }
 
     aside.chatWindow {
-        z-index: 100;
+        z-index: 1000;
         pointer-events: auto;
         position: absolute;
         top: 0;

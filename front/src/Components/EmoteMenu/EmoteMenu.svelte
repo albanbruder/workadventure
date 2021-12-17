@@ -64,6 +64,8 @@
         height: 100%;
         justify-content: center;
         align-items: center;
+        position: absolute;
+        z-index: 101;
     }
 
     .emote-menu {

@@ -12,7 +12,10 @@ function createCoWebsiteStore() {
         add: (coWebsite: CoWebsite, position?: number) => {
             if (position || position === 0) {
                 update((currentArray) => {
-                    if (currentArray.length > position) {
+                    if (position === 0) {
+                        return [coWebsite, ...currentArray];
+                    } else if (currentArray.length > position) {
+                        const test = [...currentArray.splice(position, 0, coWebsite)];
                         return [...currentArray.splice(position, 0, coWebsite)];
                     }
 
@@ -28,6 +31,7 @@ function createCoWebsiteStore() {
                 ...currentArray.filter((currentCoWebsite) => currentCoWebsite.iframe.id !== coWebsite.iframe.id),
             ]);
         },
+
         empty: () => {
             set(Array<CoWebsite>());
         },
@@ -46,6 +50,7 @@ export const coWebsiteThumbails = derived(
 
             return (
                 !highlightedEmbedScreen ||
+                highlightedEmbedScreen.type !== "cowebsite" ||
                 (highlightedEmbedScreen.type === "cowebsite" &&
                     highlightedEmbedScreen.embed.iframe.id !== coWebsite.iframe.id)
             );

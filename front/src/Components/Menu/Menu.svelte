@@ -125,10 +125,10 @@
         pointer-events: auto;
         height: 80%;
         width: 75%;
-        top: 10%;
+        top: 4%;
 
-        position: relative;
-        z-index: 80;
+        position: absolute;
+        z-index: 900;
         margin: auto;
 
         display: grid;

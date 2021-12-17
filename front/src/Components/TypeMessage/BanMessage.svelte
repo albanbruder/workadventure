@@ -55,8 +55,13 @@
     div.main-ban-message {
         display: flex;
         flex-direction: column;
-        position: relative;
-        top: 15vh;
+        position: absolute;
+        top: 4%;
+        left: 0;
+        right: 0;
+        margin-left: auto;
+        margin-right: auto;
+        z-index: 850;
 
         height: 70vh;
         width: 60vw;

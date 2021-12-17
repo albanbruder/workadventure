@@ -8,7 +8,7 @@
 
 <aside id="cameras-container">
     {#each [...$streamableCollectionStore.values()] as peer (peer.uniqueId)}
-        {#if !highlightedEmbedScreen || (highlightedEmbedScreen.type === "streamable" && highlightedEmbedScreen.embed !== peer)}
+        {#if !highlightedEmbedScreen || highlightedEmbedScreen.type !== "streamable" || (highlightedEmbedScreen.type === "streamable" && highlightedEmbedScreen.embed !== peer)}
             <MediaBox streamable={peer} />
         {/if}
     {/each}
@@ -18,7 +18,6 @@
     #cameras-container {
         flex: 0 0 25%;
         overflow-y: auto;
-
         &:first-child {
             margin-top: 2%;
         }

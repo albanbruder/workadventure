@@ -21,7 +21,8 @@
         left: 0;
         right: 0;
         bottom: 40px;
-        margin: 0 auto;
+        margin-right: auto;
+        margin-left: auto;
         padding: 0;
         width: clamp(200px, 20vw, 20vw);
 
@@ -31,6 +32,10 @@
         animation: moveMessage 0.5s;
         animation-iteration-count: infinite;
         animation-timing-function: ease-in-out;
+
+        div {
+            margin-bottom: 5%;
+        }
     }
 
     div.nes-container.is-rounded {

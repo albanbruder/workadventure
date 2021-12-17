@@ -26,7 +26,18 @@ function createHighlightedEmbedScreenStore() {
             set(null);
         },
         toggleHighlight: (embedScreen: EmbedScreen) => {
-            update((currentEmbedScreen) => (embedScreen !== currentEmbedScreen ? embedScreen : null));
+            update((currentEmbedScreen) =>
+                !currentEmbedScreen ||
+                embedScreen.type !== currentEmbedScreen.type ||
+                (embedScreen.type === "cowebsite" &&
+                    currentEmbedScreen.type === "cowebsite" &&
+                    embedScreen.embed.iframe.id !== currentEmbedScreen.embed.iframe.id) ||
+                (embedScreen.type === "streamable" &&
+                    currentEmbedScreen.type === "streamable" &&
+                    embedScreen.embed.uniqueId !== currentEmbedScreen.embed.uniqueId)
+                    ? embedScreen
+                    : null
+            );
         },
     };
 }

@@ -24,11 +24,15 @@
 <style lang="scss">
     div.error-div {
         pointer-events: auto;
-        margin-top: 10vh;
+        margin-top: 4%;
         margin-right: auto;
         margin-left: auto;
+        left: 0;
+        right: 0;
+        position: absolute;
         width: max-content;
         max-width: 80vw;
+        z-index: 230;
 
         .button-bar {
             text-align: center;

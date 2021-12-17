@@ -2,7 +2,7 @@
     import { obtainedMediaConstraintStore } from "../Stores/MediaStore";
     import { localStreamStore, isSilentStore } from "../Stores/MediaStore";
     import SoundMeterWidget from "./SoundMeterWidget.svelte";
-    import { onDestroy } from "svelte";
+    import { onDestroy, onMount } from "svelte";
     import { srcObject } from "./Video/utils";
 
     let stream: MediaStream | null;
@@ -22,21 +22,35 @@
         isSilent = value;
     });
 
+    let cameraContainer: HTMLDivElement;
+
+    onMount(() => {
+        cameraContainer.addEventListener("transitionend", () => {
+            if (cameraContainer.classList.contains("hide")) {
+                cameraContainer.style.visibility = "hidden";
+            }
+        });
+
+        cameraContainer.addEventListener("transitionstart", () => {
+            if (!cameraContainer.classList.contains("hide")) {
+                cameraContainer.style.visibility = "visible";
+            }
+        });
+    });
+
     onDestroy(unsubscribeIsSilent);
 </script>
 
-<div>
-    <div
-        class="nes-container is-rounded my-cam-video-container"
-        class:hide={!$obtainedMediaConstraintStore.video || isSilent}
-    >
-        {#if $localStreamStore.type === "success" && $localStreamStore.stream}
-            <video class="my-cam-video" use:srcObject={stream} autoplay muted playsinline />
-            <SoundMeterWidget {stream} />
-        {/if}
-    </div>
+<div
+    class="nes-container is-rounded my-cam-video-container"
+    class:hide={($localStreamStore.type !== "success" || !$obtainedMediaConstraintStore.video) && !isSilent}
+    bind:this={cameraContainer}
+>
     {#if isSilent}
         <div class="is-silent">Silent zone</div>
+    {:else if $localStreamStore.type === "success" && $localStreamStore.stream}
+        <video class="my-cam-video" use:srcObject={stream} autoplay muted playsinline />
+        <SoundMeterWidget {stream} />
     {/if}
 </div>
 
@@ -46,14 +60,14 @@
         right: 15px;
         bottom: 30px;
         max-height: 20%;
-        transition: right 350ms;
+        transition: transform 1000ms;
         padding: 0;
         background-color: #00000099;
         overflow: hidden;
     }
 
     .my-cam-video-container.hide {
-        right: -20vw;
+        transform: translateX(200%);
     }
 
     .my-cam-video {
@@ -62,5 +76,11 @@
         width: 100%;
         -webkit-transform: scaleX(-1);
         transform: scaleX(-1);
+    }
+
+    .is-silent {
+        font-size: 2em;
+        color: white;
+        padding: 40px 20px;
     }
 </style>
